@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -32,7 +33,7 @@ class Bracket {
 
 class check_brackets {
 	
-	public static void printFiles(String dirName) {
+	public static void printFiles(String dirName, int n, int st) {
 		Path p = Paths.get(dirName);
 		List<Path> pl = new ArrayList<Path>();
 		
@@ -53,6 +54,20 @@ class check_brackets {
 			
 		}
 		
+		Charset cset = Charset.forName("US-ASCII");
+		
+		for(int f = st; f < st+n; ++f) {
+			try(BufferedReader br = Files.newBufferedReader(pl.get(f), cset)){
+				String s = br.readLine();
+				System.out.println("Filename: " + pl.get(f).getFileName());
+				System.out.println(s);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				//try with resources closes the resource
+			}
+		}
+		
 	}
 	
 	
@@ -61,7 +76,7 @@ class check_brackets {
     	String testsDir = "tests-check";
     	System.out.println("Test Files: ");
     	System.out.println("");
-    	printFiles(testsDir);
+    	printFiles(testsDir, 2, 84);
     	
     	
     	
