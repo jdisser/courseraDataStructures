@@ -33,7 +33,8 @@ class Bracket {
 
 class check_brackets {
 	
-	public static void printFiles(String dirName, int n, int st) {
+	
+	public static List<Path> getFileNames(String dirName){
 		Path p = Paths.get(dirName);
 		List<Path> pl = new ArrayList<Path>();
 		
@@ -53,19 +54,39 @@ class check_brackets {
 		} finally {
 			
 		}
+		return pl;
+	}
+	
+	public static String getFileContent(Path p) {
+		
+		String s = null;
 		
 		Charset cset = Charset.forName("US-ASCII");
+		try(BufferedReader br = Files.newBufferedReader(p, cset)){
+			s = br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return s;
+	}
+	
+	
+	public static void printFiles(String dirName, int n, int st) {
+		
+		List<Path> pl = getFileNames(dirName);
+		Charset cset = Charset.forName("US-ASCII");
+		String s = null;
+		Path path = null;
 		
 		for(int f = st; f < st+n; ++f) {
-			try(BufferedReader br = Files.newBufferedReader(pl.get(f), cset)){
-				String s = br.readLine();
-				System.out.println("Filename: " + pl.get(f).getFileName());
+			
+			path = pl.get(f);
+			s = getFileContent(path);
+			
+				System.out.println("Filename: " + path.getFileName());
 				System.out.println(s);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				//try with resources closes the resource
-			}
+			
 		}
 		
 	}
