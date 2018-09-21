@@ -166,6 +166,7 @@ class check_brackets {
 		String testS = null;
 		String result = null;
 		Path path = null;
+		String success = null;
 		
 		for(int f = test; f < test+n; ++f) {
 			
@@ -173,26 +174,53 @@ class check_brackets {
 			testS = getFileContent(path);
 			path = paths.get(f*2 + 1);
 			result = getFileContent(path);
+			success = null;
 			
-			
+			//put tests here for base cases ie. string.length < 2
 
-	        BracketStack opening_brackets_stack = new BracketStack();
+	        BracketStack brackets = new BracketStack();
+	        Bracket top = null;
+	        Bracket nextBracket = null;
 	        
 	        for (int position = 0; position < testS.length(); ++position) {
+	        	
+	        	if(success != null)		//terminate with extreme prejudice...
+	        		break;
+	        	
 	            char next = testS.charAt(position);
 
 	            if (next == '(' || next == '[' || next == '{') {
 	                // Process opening bracket, write your code here
+	            	brackets.push(new Bracket(next, position));
 	            }
 
 	            if (next == ')' || next == ']' || next == '}') {
 	                // Process closing bracket, write your code here
+	            	nextBracket = new Bracket(next, position);
+	            	if(brackets.isEmpty()) {
+	            		success = Integer.toString(nextBracket.position);
+	            	} else {
+	            		top = brackets.pop();
+	            		if (top.Match(nextBracket.type))
+	            			continue;
+	            		else {
+	            			success = Integer.toString(nextBracket.position);
+	            		}
+	            			
+	            	}
+	            		
 	            }
 	        }
 			
+	        	if(success == null && brackets.isEmpty())
+	        		success = "Success";
 			
 				System.out.println("Filename: " + path.getFileName());
 				System.out.println(testS);
+				System.out.println("Test result: " + success);
+				System.out.println("File Result: " + result);
+				System.out.println("");
+				
 			
 		}
 	}
