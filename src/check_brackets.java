@@ -99,10 +99,11 @@ class check_brackets {
 				pl.add(file);				
 			}
 			pl.sort(null);
+			/*
 			for(Path file : pl) {
 				System.out.println(file.getFileName());
 			}
-
+			*/
 		} catch (IOException x) {
 			System.err.println(x);
 		} catch (DirectoryIteratorException x) {
@@ -160,23 +161,81 @@ class check_brackets {
         return text;
 	}
 	
-	public void runTests(String dirName, int test, int n ) {
+	public static String testBrackets(String testS) {
+		
+		String success = null;
+		
+		if(testS.length() == 1)
+			success = Integer.toString(1);
+
+        BracketStack brackets = new BracketStack();
+        Bracket top = null;
+        Bracket nextBracket = null;
+        
+        for (int position = 0; position < testS.length(); ++position) {
+        	
+        	if(success != null)		//terminate with extreme prejudice...
+        		break;
+        	
+            char next = testS.charAt(position);
+
+            if (next == '(' || next == '[' || next == '{') {
+                
+            	brackets.push(new Bracket(next, position));
+            }
+
+            if (next == ')' || next == ']' || next == '}') {
+                
+            	nextBracket = new Bracket(next, position);
+            	if(brackets.isEmpty()) {
+            		success = Integer.toString(nextBracket.position + 1);		//requires 1 based output
+            	} else {
+            		top = brackets.pop();
+            		if (top.Match(nextBracket.type))
+            			continue;
+            		else {
+            			success = Integer.toString(nextBracket.position + 1);
+            		}
+            			
+            	}
+            		
+            }
+        }
+		
+        	if(success == null) {
+        		if(!brackets.isEmpty())
+        			success = Integer.toString(brackets.pop().position + 1);
+        		else
+        			success = "Success";
+        	}
+        	
+        	return success;
+	}
+	
+	
+	
+	
+	public static void runTests(String dirName, int test, int n ) {
 		List<Path> paths = getFileNames(dirName);
 		
 		String testS = null;
 		String result = null;
-		Path path = null;
+		Path pathT = null;
+		Path pathR = null;
 		String success = null;
+		
 		
 		for(int f = test; f < test+n; ++f) {
 			
-			path = paths.get(f*2);
-			testS = getFileContent(path);
-			path = paths.get(f*2 + 1);
-			result = getFileContent(path);
-			success = null;
+			pathT = paths.get(f*2);
+			testS = getFileContent(pathT);
+			pathR = paths.get(f*2 + 1);
+			result = getFileContent(pathR);
+			success = testBrackets(testS);
 			
-			//put tests here for base cases ie. string.length < 2
+			/*
+			if(testS.length() == 1)
+				success = Integer.toString(1);
 
 	        BracketStack brackets = new BracketStack();
 	        Bracket top = null;
@@ -190,21 +249,21 @@ class check_brackets {
 	            char next = testS.charAt(position);
 
 	            if (next == '(' || next == '[' || next == '{') {
-	                // Process opening bracket, write your code here
+	                
 	            	brackets.push(new Bracket(next, position));
 	            }
 
 	            if (next == ')' || next == ']' || next == '}') {
-	                // Process closing bracket, write your code here
+	                
 	            	nextBracket = new Bracket(next, position);
 	            	if(brackets.isEmpty()) {
-	            		success = Integer.toString(nextBracket.position);
+	            		success = Integer.toString(nextBracket.position + 1);		//requires 1 based output
 	            	} else {
 	            		top = brackets.pop();
 	            		if (top.Match(nextBracket.type))
 	            			continue;
 	            		else {
-	            			success = Integer.toString(nextBracket.position);
+	            			success = Integer.toString(nextBracket.position + 1);
 	            		}
 	            			
 	            	}
@@ -212,13 +271,19 @@ class check_brackets {
 	            }
 	        }
 			
-	        	if(success == null && brackets.isEmpty())
-	        		success = "Success";
+	        	if(success == null) {
+	        		if(!brackets.isEmpty())
+	        			success = Integer.toString(brackets.pop().position + 1);
+	        		else
+	        			success = "Success";
+	        	}
+			*/
 			
-				System.out.println("Filename: " + path.getFileName());
+				System.out.println("Filename: " + pathT.getFileName());
 				System.out.println(testS);
 				System.out.println("Test result: " + success);
 				System.out.println("File Result: " + result);
+//				System.out.println(brackets.isEmpty());
 				System.out.println("");
 				
 			
@@ -231,11 +296,7 @@ class check_brackets {
     	String testsDir = "tests-check";
     	System.out.println("Test Files: ");
     	System.out.println("");
-    	printFiles(testsDir, 2, 84);
-    	
-    	
-    	
-    	
+    	runTests(testsDir, 0, 54);
 
     }
 }
