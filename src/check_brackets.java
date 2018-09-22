@@ -154,11 +154,16 @@ class check_brackets {
 		
 	}
 	
-	public String getInput() throws IOException {
+	public static String getInput() throws IOException {
+		try {
 		InputStreamReader input_stream = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input_stream);
         String text = reader.readLine();
         return text;
+		} catch(IOException ioe) {
+			System.out.println(ioe.getMessage());
+			return null;
+		}
 	}
 	
 	public static String testBrackets(String testS) {
@@ -233,57 +238,12 @@ class check_brackets {
 			result = getFileContent(pathR);
 			success = testBrackets(testS);
 			
-			/*
-			if(testS.length() == 1)
-				success = Integer.toString(1);
-
-	        BracketStack brackets = new BracketStack();
-	        Bracket top = null;
-	        Bracket nextBracket = null;
-	        
-	        for (int position = 0; position < testS.length(); ++position) {
-	        	
-	        	if(success != null)		//terminate with extreme prejudice...
-	        		break;
-	        	
-	            char next = testS.charAt(position);
-
-	            if (next == '(' || next == '[' || next == '{') {
-	                
-	            	brackets.push(new Bracket(next, position));
-	            }
-
-	            if (next == ')' || next == ']' || next == '}') {
-	                
-	            	nextBracket = new Bracket(next, position);
-	            	if(brackets.isEmpty()) {
-	            		success = Integer.toString(nextBracket.position + 1);		//requires 1 based output
-	            	} else {
-	            		top = brackets.pop();
-	            		if (top.Match(nextBracket.type))
-	            			continue;
-	            		else {
-	            			success = Integer.toString(nextBracket.position + 1);
-	            		}
-	            			
-	            	}
-	            		
-	            }
-	        }
 			
-	        	if(success == null) {
-	        		if(!brackets.isEmpty())
-	        			success = Integer.toString(brackets.pop().position + 1);
-	        		else
-	        			success = "Success";
-	        	}
-			*/
 			
 				System.out.println("Filename: " + pathT.getFileName());
 				System.out.println(testS);
 				System.out.println("Test result: " + success);
 				System.out.println("File Result: " + result);
-//				System.out.println(brackets.isEmpty());
 				System.out.println("");
 				
 			
@@ -291,12 +251,15 @@ class check_brackets {
 	}
 	
 	
-    public static void main(String[] args){
-    	
+    public static void main(String[] args) throws IOException{
+    	/*
     	String testsDir = "tests-check";
     	System.out.println("Test Files: ");
     	System.out.println("");
     	runTests(testsDir, 0, 54);
-
+		*/
+    	String testS = getInput();
+    	String success = testBrackets(testS);
+    	System.out.println(success);
     }
 }
