@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -53,6 +54,64 @@ public class tree_height {
 		}
 		return pl;
 	}
+	
+	/*
+	 * Prints a listing of the test files
+	 * 
+	 */
+	public static void printFiles(String dirName, int n, int st) {
+		
+		List<Path> pl = getFileNames(dirName);
+		int[] s = null;
+		Path path = null;
+		
+		for(int f = st; f < st+n; ++f) {
+			
+			path = pl.get(f);
+			s = getFileContent(path);
+			
+				System.out.println("Filename: " + path.getFileName());
+				System.out.println(Arrays.toString(s));
+			
+		}
+		
+	}
+	
+	/*
+	 * Returns the array of ints contained in the specified file
+	 * 
+	 */
+	public static int[] getFileContent(Path p) {
+		
+		String len = null;
+		String arrs = null;
+		String[] vals = null;
+		
+		int l = 0;
+		
+		
+		
+		Charset cset = Charset.forName("US-ASCII");
+		try(BufferedReader br = Files.newBufferedReader(p, cset)){
+			len = br.readLine();
+			arrs = br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		l = Integer.valueOf(len);
+		vals = new String[l];
+		vals = arrs.split(" ");
+		int[] a = new int[l];
+		
+		int i = 0;
+		for(String e : vals) {
+			a[i] = Integer.valueOf(e);
+			++i;
+		}
+		
+		return a;
+	}
 
 	public class TreeHeight {
 		int n;
@@ -92,9 +151,16 @@ public class tree_height {
                     }
                 }, "1", 1 << 26).start();
 	}
+	
 	public void run() throws IOException {
-		TreeHeight tree = new TreeHeight();
-		tree.read();
-		System.out.println(tree.computeHeight());
+//		TreeHeight tree = new TreeHeight();
+//		tree.read();
+//		System.out.println(tree.computeHeight());
+		
+		String testsDir = "tests-tree";
+    	System.out.println("Test Files: ");
+    	System.out.println("");
+    	printFiles(testsDir, 10, 0);
+		
 	}
 }
