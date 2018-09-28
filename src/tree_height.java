@@ -65,13 +65,14 @@ public class tree_height {
 		int[] s = null;
 		Path path = null;
 		
-		for(int f = st; f < st+n; ++f) {
+		for(int f = st; f < st + n*2; f = f + 2) {
 			
 			path = pl.get(f);
 			s = getFileContent(path);
 			
 				System.out.println("Filename: " + path.getFileName());
 				System.out.println(Arrays.toString(s));
+				System.out.println(" ");
 			
 		}
 		
@@ -85,7 +86,7 @@ public class tree_height {
 		
 		String len = null;
 		String arrs = null;
-		String[] vals = null;
+		//String[] vals = null;
 		
 		int l = 0;
 		
@@ -100,9 +101,18 @@ public class tree_height {
 		}
 		
 		l = Integer.valueOf(len);
-		vals = new String[l];
-		vals = arrs.split(" ");
-		int[] a = new int[l];
+		System.out.println("l: " + l);
+
+//		vals = new String[l];
+		String[] vals = arrs.split(" ");			//<--- !!!!!! index out of bounds = 3??? on 2nd pass
+		
+		System.out.print("vals: ");
+		for(String s : vals)
+			System.out.print(s + " ");
+		
+		System.out.println("");
+		
+		int[] a = new int[vals.length];
 		
 		int i = 0;
 		for(String e : vals) {
