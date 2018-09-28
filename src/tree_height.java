@@ -1,5 +1,10 @@
 import java.util.*;
 import java.io.*;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class tree_height {
     class FastScanner {
@@ -19,6 +24,35 @@ public class tree_height {
 			return Integer.parseInt(next());
 		}
 	}
+    
+    /*
+	 * 
+	 * Returns a List of paths to test files in the specified directory
+	 * 
+	 */	
+	public static List<Path> getFileNames(String dirName){
+		Path p = Paths.get(dirName);
+		List<Path> pl = new ArrayList<Path>();
+		
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(p)) {
+			for(Path file : ds) {
+				pl.add(file);				
+			}
+			pl.sort(null);
+			/*
+			for(Path file : pl) {
+				System.out.println(file.getFileName());
+			}
+			*/
+		} catch (IOException x) {
+			System.err.println(x);
+		} catch (DirectoryIteratorException x) {
+			System.err.println(x);
+		} finally {
+			
+		}
+		return pl;
+	}
 
 	public class TreeHeight {
 		int n;
@@ -32,6 +66,8 @@ public class tree_height {
 				parent[i] = in.nextInt();
 			}
 		}
+		
+		
 
 		int computeHeight() {
                         // Replace this code with a faster implementation
