@@ -286,13 +286,14 @@ public class tree_height {
 	
 	public void run() throws IOException {
 		TreeHeight tree = new TreeHeight();
-//		tree.read();
-//		System.out.println(tree.computeHeight());
+		tree.read();
+		tree.growTree(tree.parent);
+		System.out.println(tree.computeHeight());
 		
-		String testsDir = "tests-tree";
-    	System.out.println("Test Files: ");
-    	System.out.println("");
-    	printFiles(testsDir, 24, 0, tree);
+//		String testsDir = "tests-tree";
+//    	System.out.println("Test Files: ");
+//    	System.out.println("");
+//    	printFiles(testsDir, 24, 0, tree);
 		
 	}
 }
