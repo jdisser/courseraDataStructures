@@ -82,9 +82,10 @@ public class tree_height {
 			result = getResult(path);
 			
 				System.out.println("Filename: " + path.getFileName());
-				System.out.println(Arrays.toString(s));
+//				System.out.println(Arrays.toString(s));
 				System.out.println(" ");
-				System.out.println("GrowTree: " + tree.growTree(s));
+				tree.growTree(s);
+				System.out.println("ComputeHeight: " + tree.computeHeight());
 				System.out.println("Result: " + result);
 				System.out.println(" ");
 			
@@ -115,16 +116,16 @@ public class tree_height {
 		}
 		
 		l = Integer.valueOf(len);
-		System.out.println("l: " + l);
+//		System.out.println("l: " + l);
 
 
 		String[] vals = arrs.split(" ");
 		
-		System.out.print("vals: ");
-		for(String s : vals)
-			System.out.print(s + " ");
+//		System.out.print("vals: ");
+//		for(String s : vals)
+//			System.out.print(s + " ");
 		
-		System.out.println("");
+//		System.out.println("");
 		
 		int[] a = new int[vals.length];
 		
@@ -137,7 +138,11 @@ public class tree_height {
 		return a;
 	}
 
-	
+	/*
+	 * 
+	 * Read the correct test result from the file
+	 * 
+	 */
 	public static int getResult(Path p) {
 		
 		String result = null;
@@ -156,9 +161,11 @@ public class tree_height {
 		return l;
 	}
 	
-	
-	
-	
+/*
+ * 
+ * Build the tree from the input string and calculate it's height
+ * 	
+ */
 	public class TreeHeight {
 		int n;
 		int parent[];
@@ -167,11 +174,14 @@ public class tree_height {
 		
 		List<Tnode> tree = new ArrayList<Tnode>();
 		
+		Queue<Integer> queue = new LinkedList<Integer>();
+		
 		
 		class Tnode {
 
 			public int parent = -1;
 			public int order;
+			public int tkey;
 			public List<Integer> children = new ArrayList<Integer>();
 			
 			public Tnode() {
@@ -189,10 +199,9 @@ public class tree_height {
 			}
 		}
 		
-		int growTree(int[] prnts) {
+		void growTree(int[] prnts) {
 			
-			maxOrder = 0;
-			int myOrder = 0;
+			tree.clear();
 			
 			int l = prnts.length;
 			
@@ -200,35 +209,67 @@ public class tree_height {
 				tree.add(new Tnode());
 			}
 			
+			Tnode tn = null;
+
+			
 			for(int j = 0; j < l; ++j) {
 				
-				myOrder = 0;
+				tn = tree.get(j);
+				tn.tkey = j;
 				
 				if(prnts[j] == -1) {
 					root = j;
-					tree.get(j).order = 1;
+					tn.order = 1;
 				} else {
 					tree.get(prnts[j]).children.add(j);
-					myOrder = tree.get(prnts[j]).order + 1;
-					if(myOrder > maxOrder)
-						maxOrder = myOrder;
-					tree.get(j).order = myOrder;
-					tree.get(j).parent = prnts[j];
+					tn.order = -1;						//set node order to default for now
+					tn.parent = prnts[j];			
 				}
 			}
-			return maxOrder;
+			
+//			System.out.println("root: " + root);
+//			System.out.println("");
+			
+//			for(Tnode n : tree) {
+//				System.out.println("Key: " + n.tkey);
+//				System.out.println("Order: " + n.order);
+//				System.out.println("Parent: " + n.parent);
+//				System.out.println("");
+//			}
+			
 		}
 
 		int computeHeight() {
-                        // Replace this code with a faster implementation
-			int maxHeight = 0;
+ 		
+			/*
+			 * naive algorithm code supplied by Coursera, 
+			 * 
 			for (int vertex = 0; vertex < n; vertex++) {
 				int height = 0;
 				for (int i = vertex; i != -1; i = parent[i])
 					height++;
 				maxHeight = Math.max(maxHeight, height);
 			}
-			return maxHeight;
+			*/
+			
+			maxOrder = 0;
+			queue.clear();
+			queue.add(root);
+			Tnode n = null;
+			
+			while(!queue.isEmpty()) {
+				n = tree.get(queue.peek());
+				if(n.tkey != root) {
+					n.order = tree.get(n.parent).order + 1;
+					if(n.order > maxOrder)
+						maxOrder = n.order;
+				}
+				queue.addAll(n.children);
+				queue.remove();
+				
+			}
+			
+			return maxOrder;
 		}
 	}
 
@@ -251,7 +292,7 @@ public class tree_height {
 		String testsDir = "tests-tree";
     	System.out.println("Test Files: ");
     	System.out.println("");
-    	printFiles(testsDir, 10, 0, tree);
+    	printFiles(testsDir, 24, 0, tree);
 		
 	}
 }
