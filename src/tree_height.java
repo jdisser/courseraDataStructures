@@ -72,16 +72,21 @@ public class tree_height {
 		List<Path> pl = getFileNames(dirName);
 		int[] s = null;
 		Path path = null;
+		int result = -1;
 		
 		for(int f = st; f < st + n*2; f = f + 2) {
 			
 			path = pl.get(f);
 			s = getFileContent(path);
+			path = pl.get(f + 1);
+			result = getResult(path);
 			
 				System.out.println("Filename: " + path.getFileName());
 				System.out.println(Arrays.toString(s));
 				System.out.println(" ");
 				System.out.println("GrowTree: " + tree.growTree(s));
+				System.out.println("Result: " + result);
+				System.out.println(" ");
 			
 		}
 		
@@ -132,6 +137,28 @@ public class tree_height {
 		return a;
 	}
 
+	
+	public static int getResult(Path p) {
+		
+		String result = null;
+		int l = 0;
+				
+		Charset cset = Charset.forName("US-ASCII");
+		try(BufferedReader br = Files.newBufferedReader(p, cset)){
+			result = br.readLine();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		l = Integer.valueOf(result);
+		
+		return l;
+	}
+	
+	
+	
+	
 	public class TreeHeight {
 		int n;
 		int parent[];
