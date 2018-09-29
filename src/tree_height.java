@@ -8,6 +8,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class tree_height {
+	/*
+	 * Read input from cl or grader with methods that return an int
+	 * 
+	 * 
+	 */
     class FastScanner {
 		StringTokenizer tok = new StringTokenizer("");
 		BufferedReader in;
@@ -17,10 +22,13 @@ public class tree_height {
 		}
 
 		String next() throws IOException {
+			
 			while (!tok.hasMoreElements())
 				tok = new StringTokenizer(in.readLine());
+			
 			return tok.nextToken();
 		}
+		
 		int nextInt() throws IOException {
 			return Integer.parseInt(next());
 		}
@@ -59,7 +67,7 @@ public class tree_height {
 	 * Prints a listing of the test files
 	 * 
 	 */
-	public static void printFiles(String dirName, int n, int st) {
+	public static void printFiles(String dirName, int n, int st, TreeHeight tree) {
 		
 		List<Path> pl = getFileNames(dirName);
 		int[] s = null;
@@ -73,6 +81,7 @@ public class tree_height {
 				System.out.println("Filename: " + path.getFileName());
 				System.out.println(Arrays.toString(s));
 				System.out.println(" ");
+				System.out.println("GrowTree: " + tree.growTree(s));
 			
 		}
 		
@@ -103,8 +112,8 @@ public class tree_height {
 		l = Integer.valueOf(len);
 		System.out.println("l: " + l);
 
-//		vals = new String[l];
-		String[] vals = arrs.split(" ");			//<--- !!!!!! index out of bounds = 3??? on 2nd pass
+
+		String[] vals = arrs.split(" ");
 		
 		System.out.print("vals: ");
 		for(String s : vals)
@@ -126,6 +135,23 @@ public class tree_height {
 	public class TreeHeight {
 		int n;
 		int parent[];
+		int root;
+		int maxOrder;
+		
+		List<Tnode> tree = new ArrayList<Tnode>();
+		
+		
+		class Tnode {
+
+			public int parent = -1;
+			public int order;
+			public List<Integer> children = new ArrayList<Integer>();
+			
+			public Tnode() {
+				
+			}
+		}
+		
 		
 		void read() throws IOException {
 			FastScanner in = new FastScanner();
@@ -136,7 +162,35 @@ public class tree_height {
 			}
 		}
 		
-		
+		int growTree(int[] prnts) {
+			
+			maxOrder = 0;
+			int myOrder = 0;
+			
+			int l = prnts.length;
+			
+			for(int i = 0; i < l; ++i) {
+				tree.add(new Tnode());
+			}
+			
+			for(int j = 0; j < l; ++j) {
+				
+				myOrder = 0;
+				
+				if(prnts[j] == -1) {
+					root = j;
+					tree.get(j).order = 1;
+				} else {
+					tree.get(prnts[j]).children.add(j);
+					myOrder = tree.get(prnts[j]).order + 1;
+					if(myOrder > maxOrder)
+						maxOrder = myOrder;
+					tree.get(j).order = myOrder;
+					tree.get(j).parent = prnts[j];
+				}
+			}
+			return maxOrder;
+		}
 
 		int computeHeight() {
                         // Replace this code with a faster implementation
@@ -163,14 +217,14 @@ public class tree_height {
 	}
 	
 	public void run() throws IOException {
-//		TreeHeight tree = new TreeHeight();
+		TreeHeight tree = new TreeHeight();
 //		tree.read();
 //		System.out.println(tree.computeHeight());
 		
 		String testsDir = "tests-tree";
     	System.out.println("Test Files: ");
     	System.out.println("");
-    	printFiles(testsDir, 10, 0);
+    	printFiles(testsDir, 10, 0, tree);
 		
 	}
 }
