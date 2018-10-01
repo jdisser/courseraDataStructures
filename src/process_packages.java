@@ -91,11 +91,14 @@ class process_packages {
 	static Queue<Request> requests;
 	static Queue<Response>  responses;
 	static Queue<Integer> starts;
+	static Queue<Request> processed;
 	static int strtClk;
 	static int busyClk;
 	
 	static int bufSize;
 	static int n = 0;
+	
+	static Buffer buffer;
 	
 	static Request switchingReq;
 	static Request processingReq;
@@ -116,11 +119,11 @@ class process_packages {
 				pl.add(file);				
 			}
 			pl.sort(null);
-			/*
-			for(Path file : pl) {
-				System.out.println(file.getFileName());
-			}
-			*/
+
+//			for(Path file : pl) {
+//				System.out.println(file.getFileName());
+//			}
+
 		} catch (IOException x) {
 			System.err.println(x);
 		} catch (DirectoryIteratorException x) {
@@ -143,6 +146,9 @@ class process_packages {
 		Charset cset = Charset.forName("US-ASCII");
 		try(BufferedReader br = Files.newBufferedReader(p, cset)){
 			lens = br.readLine();
+//			System.out.println("In getFileContent: \n");
+			System.out.println("Filename: " + p.getFileName().toString());
+			System.out.println("Parameter line: " + lens);
 			String[] vals = lens.split(" ");
 			n = Integer.valueOf(vals[1]);
 			bufSize = Integer.valueOf(vals[0]);
@@ -150,6 +156,7 @@ class process_packages {
 			for(int i = 0; i < n; ++i) {
 				lens = br.readLine();
 				vals = lens.split(" ");
+				System.out.println("Read Line: " + lens);
 				Request r = new Request();
 				r.arrival_time = Integer.valueOf(vals[0]);
 				r.process_time = Integer.valueOf(vals[1]);
@@ -204,6 +211,11 @@ class process_packages {
 				
 		Path path = null;
 		int result = -1;
+		requests = new LinkedList<Request>();
+		responses = new LinkedList<Response>();
+		processed = new LinkedList<Request>();
+		
+		
 		
 		for(int f = st; f < st + n*2; f = f + 2) {
 			
@@ -211,18 +223,34 @@ class process_packages {
 			getFileContent(path);
 			path = pl.get(f + 1);
 			getResult(path);
+			if(!requests.isEmpty()) {
+				buffer = new Buffer(bufSize);
+				System.out.println("Calling ProcessRequests...");
+				ProcessRequests();
+			}
+
 			
-				System.out.println("Filename: " + path.getFileName());
-				System.out.println(" ");
-				
-				for (Request r : requests) {
-					System.out.println("A: "+ r.arrival_time + " P: " + r.process_time + " St: " + starts.remove().intValue());
+			
+//				System.out.println("Filename: " + path.getFileName());
+				System.out.println("# of Responses: " + responses.size());
+				System.out.println("Requests: ");
+				if(!processed.isEmpty()) {
+					for (Request r : processed) {
+						System.out.print("A: "+ r.arrival_time + " P: " + r.process_time + " St: " + starts.remove().intValue());
+						if(!responses.isEmpty()) {
+							System.out.println(" Resp: " + responses.remove().start_time);
+						} else {
+							System.out.println(" Resp: " + "none");
+						}
+					}
+				} else {
+					System.out.println("No requests");
 				}
-				
-				
-				System.out.println("Result: " + result);
+
+				requests.clear();
+				responses.clear();
 				System.out.println(" ");
-			
+				
 		}
 		
 	}
@@ -246,11 +274,11 @@ class process_packages {
     
     
 
-    private static void ProcessRequests( Buffer buffer) {
+    private static void ProcessRequests() {
         
     	boolean busy = false;
     	
-    	responses = new LinkedList<Response>();
+//    	responses = new LinkedList<Response>();
         strtClk = 0;
         busyClk = 0;
         
@@ -259,7 +287,9 @@ class process_packages {
         
 
         
-        while(!requests.isEmpty() && !buffer.empty) {
+        while(!requests.isEmpty() || !buffer.empty) {
+        	
+        	System.out.println("Processing request...");
         	
         	//initialize registers
             switchingReq = null;
@@ -270,6 +300,7 @@ class process_packages {
             
         	//switch phase handles routing of incoming requests
         	switchingReq = requests.remove();
+        	processed.add(switchingReq);				//make a copy of the queue for printing
         	
         	busy = switchingReq.arrival_time < busyClk;
         	
@@ -314,6 +345,7 @@ class process_packages {
         	}
         	
         	responses.add(processingResp);
+        	System.out.println("Added response");
         	
         }
   
@@ -331,16 +363,16 @@ class process_packages {
     }
 
     public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
-
-        int buffer_max_size = scanner.nextInt();
-        Buffer buffer = new Buffer(buffer_max_size);
+//        Scanner scanner = new Scanner(System.in);
+//
+//        int buffer_max_size = scanner.nextInt();
+//        Buffer buffer = new Buffer(buffer_max_size);
 
 //        loadQueries(scanner);
 //        ProcessRequests(buffer);
 //        PrintResponses();
         
-        printFiles(getFileNames("tests-pkg"), 2, 1);
-        scanner.close();
+        printFiles(getFileNames("tests-pkg"), 18, 0);
+//        scanner.close();
     }
 }
