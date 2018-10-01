@@ -1,9 +1,20 @@
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
+
+
 
 class Request {
     public Request(int arrival_time, int process_time) {
@@ -17,6 +28,10 @@ class Request {
     public int process_time;
     public int start_time;
     public int finish_time;
+    
+    public Request() {
+    	
+    }
 }
 
 class Response {
@@ -75,14 +90,147 @@ class process_packages {
 	
 	static Queue<Request> requests;
 	static Queue<Response>  responses;
+	static Queue<Integer> starts;
 	static int strtClk;
 	static int busyClk;
+	
+	static int bufSize;
+	static int n = 0;
 	
 	static Request switchingReq;
 	static Request processingReq;
 	static Request droppedReq;
 	static Response processingResp;
 	static Response printingResp;
+	
+	/*
+	* Returns a List of paths to test files in the specified directory
+	* 
+	*/	
+	public static List<Path> getFileNames(String dirName){
+		Path p = Paths.get(dirName);
+		List<Path> pl = new ArrayList<Path>();
+		
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(p)) {
+			for(Path file : ds) {
+				pl.add(file);				
+			}
+			pl.sort(null);
+			/*
+			for(Path file : pl) {
+				System.out.println(file.getFileName());
+			}
+			*/
+		} catch (IOException x) {
+			System.err.println(x);
+		} catch (DirectoryIteratorException x) {
+			System.err.println(x);
+		} finally {
+			
+		}
+		return pl;
+	}
+	
+	/*
+	 * reads the specified test file and sets n & bufSize and loads requests
+	 * 
+	 */
+	public static void getFileContent(Path p) {
+		
+		String lens = null;
+
+
+		Charset cset = Charset.forName("US-ASCII");
+		try(BufferedReader br = Files.newBufferedReader(p, cset)){
+			lens = br.readLine();
+			String[] vals = lens.split(" ");
+			n = Integer.valueOf(vals[1]);
+			bufSize = Integer.valueOf(vals[0]);
+			
+			for(int i = 0; i < n; ++i) {
+				lens = br.readLine();
+				vals = lens.split(" ");
+				Request r = new Request();
+				r.arrival_time = Integer.valueOf(vals[0]);
+				r.process_time = Integer.valueOf(vals[1]);
+				
+				requests.add(r);
+
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/*
+	 * 
+	 * Read the test results from the file and set starts
+	 * NOTE: must run getFileContent first to set n
+	 * 
+	 */
+	public static void getResult(Path p) {
+		
+		String s = null;
+		
+		starts = new LinkedList<Integer>();
+		
+		
+		Charset cset = Charset.forName("US-ASCII");
+		try(BufferedReader br = Files.newBufferedReader(p, cset)){
+			
+			for(int i = 0; i < n ; ++i) {
+				s = br.readLine();
+				starts.add(Integer.valueOf(s));
+			}
+			
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	
+	/*
+	 * Prints a listing of the test files
+	 * Note: this is a destructive process that will empty the queues!!!
+	 * 
+	 */
+	public static void printFiles(List<Path> pl, int n, int st) {
+				
+		Path path = null;
+		int result = -1;
+		
+		for(int f = st; f < st + n*2; f = f + 2) {
+			
+			path = pl.get(f);
+			getFileContent(path);
+			path = pl.get(f + 1);
+			getResult(path);
+			
+				System.out.println("Filename: " + path.getFileName());
+				System.out.println(" ");
+				
+				for (Request r : requests) {
+					System.out.println("A: "+ r.arrival_time + " P: " + r.process_time + " St: " + starts.remove().intValue());
+				}
+				
+				
+				System.out.println("Result: " + result);
+				System.out.println(" ");
+			
+		}
+		
+	}
+	
+	private static void loadFiles(String fileDir) throws IOException {
+    	List<Path> paths = getFileNames(fileDir);
+    	printFiles(paths, 5, 0);
+    }
 	
 	
     private static void loadQueries(Scanner scanner) throws IOException {
@@ -95,6 +243,8 @@ class process_packages {
         }
 
     }
+    
+    
 
     private static void ProcessRequests( Buffer buffer) {
         
@@ -186,8 +336,11 @@ class process_packages {
         int buffer_max_size = scanner.nextInt();
         Buffer buffer = new Buffer(buffer_max_size);
 
-        loadQueries(scanner);
-        ProcessRequests(buffer);
-        PrintResponses();
+//        loadQueries(scanner);
+//        ProcessRequests(buffer);
+//        PrintResponses();
+        
+        printFiles(getFileNames("tests-pkg"), 2, 1);
+        scanner.close();
     }
 }
