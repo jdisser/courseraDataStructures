@@ -62,6 +62,12 @@ class Buffer {
     	return rtn;
     }
     
+    public void clear() {
+    	queued.clear();
+    	empty = true;
+    	full = false;
+    }
+    
     
 }
 
@@ -97,9 +103,8 @@ class process_packages {
     	responses = new LinkedList<Response>();
         strtClk = 0;
         busyClk = 0;
-//        buffer.full = false;
-//        buffer.empty = true;
-// 		  for non looping ?
+        
+        buffer.clear();
         
         
 
@@ -110,6 +115,7 @@ class process_packages {
             switchingReq = null;
             processingReq = null;
             droppedReq = null;
+            processingResp = null;
         	
             
         	//switch phase handles routing of incoming requests
@@ -164,7 +170,7 @@ class process_packages {
     }
 
     private static void PrintResponses() {
-        for (int i = 0; i < responses.size(); ++i) {
+        while (!responses.isEmpty()) {
             printingResp  = responses.remove();
             if (printingResp.dropped) {
                 System.out.println(-1);
