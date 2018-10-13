@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -27,15 +28,18 @@ public class BuildHeap {
         }
     }
 
-    private void writeResponse(List<Swap> l) {
+    private void writeResponse(List<Swap> l, String msg, int[] a) {
+    	out.println(msg);
         out.println(l.size());
         for (Swap swap : l) {
           out.println(swap.index1 + " " + swap.index2);
         }
+        out.println(Arrays.toString(a));
     }
 
     private void generateSwaps() {
       swaps = new ArrayList<Swap>();
+      mySwaps = new ArrayList<Swap>();
       // The following naive implementation just sorts 
       // the given sequence using selection sort algorithm
       // and saves the resulting sequence of swaps.
@@ -99,10 +103,10 @@ public class BuildHeap {
         out = new PrintWriter(new BufferedOutputStream(System.out));
         readData();
         generateSwaps();
-        System.out.println("Naive:");
-        writeResponse(swaps);
-        System.out.println("BinaryHeap:");
-        writeResponse(mySwaps);
+//        System.out.println();
+        writeResponse(swaps, "Naive:", data);
+//        System.out.println();
+        writeResponse(mySwaps, "BinaryHeap:", myData);
         out.close();
     }
 
