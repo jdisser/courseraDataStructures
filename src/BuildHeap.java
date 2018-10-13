@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class BuildHeap {
-    private int[] data;
+//    private int[] data;
     private int[] myData;
-    private List<Swap> swaps;
+//    private List<Swap> swaps;
     private List<Swap> mySwaps;
 
     private FastScanner in;
@@ -20,25 +20,25 @@ public class BuildHeap {
 
     private void readData() throws IOException {
         int n = in.nextInt();
-        data = new int[n];
+//        data = new int[n];
         myData = new int[n];
         for (int i = 0; i < n; ++i) {
-          data[i] = in.nextInt();
-          myData[i] = data[i];
+//          data[i] = in.nextInt();
+          myData[i] = in.nextInt();
         }
     }
 
     private void writeResponse(List<Swap> l, String msg, int[] a) {
-    	out.println(msg);
+//    	out.println(msg);
         out.println(l.size());
         for (Swap swap : l) {
           out.println(swap.index1 + " " + swap.index2);
         }
-        out.println(Arrays.toString(a));
+//        out.println(Arrays.toString(a));
     }
 
     private void generateSwaps() {
-      swaps = new ArrayList<Swap>();
+//      swaps = new ArrayList<Swap>();
       mySwaps = new ArrayList<Swap>();
       // The following naive implementation just sorts 
       // the given sequence using selection sort algorithm
@@ -49,6 +49,7 @@ public class BuildHeap {
       // TODO: replace by a more efficient implementation
       
       //Naive:
+      /*
       for (int i = 0; i < data.length; ++i) {
         for (int j = i + 1; j < data.length; ++j) {
           if (data[i] > data[j]) {
@@ -59,7 +60,7 @@ public class BuildHeap {
           }
         }
       }
-      
+      */
       //Build Binary Min Heap
       int n = myData.length;
       for(int i = n/2 - 1; i >= 0; --i) {
@@ -104,7 +105,7 @@ public class BuildHeap {
         readData();
         generateSwaps();
 //        System.out.println();
-        writeResponse(swaps, "Naive:", data);
+//        writeResponse(swaps, "Naive:", data);
 //        System.out.println();
         writeResponse(mySwaps, "BinaryHeap:", myData);
         out.close();
