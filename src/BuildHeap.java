@@ -56,16 +56,41 @@ public class BuildHeap {
         }
       }
       
-      //BinaryHeap
+      //Build Binary Min Heap
       int n = myData.length;
-      for(int i = n/2; i >= 1; --i) {
+      for(int i = n/2 - 1; i >= 0; --i) {
     	  minSiftDown(myData, i);
       }
       
     }
 
-    private void minSiftDown(int[] a, int j) {
+    private void minSiftDown(int[] a, int i) {
+    	int mini = i;
+    	int li = a.length - 1;	//0 based last index
+    	int left = 2*i + 1;
+    	int rght = 2*i + 2;
+    	if(left <= li && a[left] < a[mini]) {
+    		mini = left;
+    	}
+    	if(rght <= li && a[rght] < a[mini]) {
+    		mini = rght;
+    	}
+    	if(mini != i) {
+	   		swap(a, i, mini);
+	   		minSiftDown(a, mini);
+    	}
+   		
+    }
+    
+    //TODO: Check if int will meet problem constraints
+    
+    private void swap(int[] a, int i, int n) {
     	
+    	int t = a[i];
+    	a[i] = a[n];
+    	a[n] = t;
+    	
+    	mySwaps.add(new Swap(i,n));
     }
     
     
