@@ -64,8 +64,8 @@ public class JobQueue {
     	private List<Thread> minHeap = new ArrayList<Thread>();
     	
     	public MinHeap(int n) {
-    		for(int i=0;i<n;++i) {
-    			Thread t = new Thread(n,0);
+    		for(int i=0; i<n; ++i) {
+    			Thread t = new Thread(i,0);
     			insert(t);
     		}
     	}
@@ -140,11 +140,11 @@ public class JobQueue {
     		if(r < minHeap.size() && minThread(r,mini))
     			mini = r;
     		
-    		if(mini != i)
+    		if(mini != i) {
     			swap(mini,i);
-    		
-    		siftDown(mini);
- 		
+    			siftDown(mini);
+    		}
+ 
     	}
     	
     	public Thread extractMin() {
@@ -195,9 +195,9 @@ public class JobQueue {
     	Output o;
     	
     	for (int i = 0; i < jobs.length; ++i) {
-            out.println("Naive: " + assignedWorker[i] + " " + startTime[i]);
+            out.print("Naive: " + assignedWorker[i] + " " + startTime[i]);
             o = outQ.remove();
-            out.println("pQue: " + o.thread + " " + o.start);
+            out.println("    pQue: " + o.thread + " " + o.start);
         }
     }
 
