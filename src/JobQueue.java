@@ -195,9 +195,10 @@ public class JobQueue {
     	Output o;
     	
     	for (int i = 0; i < jobs.length; ++i) {
-            out.print("Naive: " + assignedWorker[i] + " " + startTime[i]);
+//            out.print("Naive: " + assignedWorker[i] + " " + startTime[i]);
             o = outQ.remove();
-            out.println("    pQue: " + o.thread + " " + o.start);
+//            out.println("    pQue: " + o.thread + " " + o.start);
+            out.println(o.thread + " " + o.start);
         }
     }
 
@@ -207,19 +208,19 @@ public class JobQueue {
     	outQ = new LinkedList<Output>();
     	threads = new MinHeap(numWorkers);
     	Thread t;
-    	
+    	/*
     	//naive algorithm
         assignedWorker = new int[jobs.length];
         startTime = new long[jobs.length];
         long[] nextFreeTime = new long[numWorkers];
-        
+        */
         
         
         
         //shared loop
         for (int i = 0; i < jobs.length; i++) {
             int duration = jobs[i];
-            
+            /*
             //naive
             int bestWorker = 0;
             for (int j = 0; j < numWorkers; ++j) {
@@ -229,7 +230,7 @@ public class JobQueue {
             assignedWorker[i] = bestWorker;
             startTime[i] = nextFreeTime[bestWorker];
             nextFreeTime[bestWorker] += duration;
-            
+            */
             //priorityQue
             t = threads.getMin();
             outQ.add(new Output(t.index,t.start));
