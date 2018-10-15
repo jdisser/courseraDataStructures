@@ -7,6 +7,7 @@ public class MergingTables {
     private final OutputWriter writer;
 
     Table[] tables;
+    int maxRows[];
     
     
     public MergingTables(InputReader reader, OutputWriter writer) {
@@ -40,13 +41,15 @@ public class MergingTables {
 
     int maximumNumberOfRows = -1;
 
-    void make(int i, int rows) {
+    void make(int rows, int i) {
     	Table t = new Table(rows, i);
     	tables[i] = t;
+//    	System.out.println("Created Table: " + i);
     }
     
     int find(int i) {
-    	while(tables[i].parent != i) {
+    	
+    	if(tables[i].parent != i) {
     		tables[i].parent = find(tables[i].parent);		//path compression
     	}
     	return tables[i].parent;
@@ -54,6 +57,7 @@ public class MergingTables {
     
     void merge(int i, int j) {
         
+    	//System.out.println("i: " + i + " j: " + j);
     	
     	int pi = find(i);
     	int pj = find(j);
@@ -86,17 +90,27 @@ public class MergingTables {
         int n = reader.nextInt();
         int m = reader.nextInt();
         tables = new Table[n];
+        maxRows = new int[n];
         for (int i = 0; i < n; i++) {
             int numberOfRows = reader.nextInt();
             make(numberOfRows, i);
             maximumNumberOfRows = Math.max(maximumNumberOfRows, numberOfRows);
         }
+        
+//        System.out.println("m: " + m);
+        
         for (int i = 0; i < m; i++) {
+//        	System.out.println("i: " + i);
             int destination = reader.nextInt() - 1;
             int source = reader.nextInt() - 1;
             merge(destination, source);
-            writer.printf("%d\n", maximumNumberOfRows);
+            //writer.printf("%d\n", maximumNumberOfRows);
+            maxRows[i] = maximumNumberOfRows;
+//            System.out.println("maxRows[" + i + "]: " + maxRows[i]);
         }
+        
+        for (int i = 0; i < m; i++)
+        	System.out.println(maxRows[i]);
     }
 
 
