@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -7,6 +6,9 @@ public class MergingTables {
     private final InputReader reader;
     private final OutputWriter writer;
 
+    Table[] tables;
+    
+    
     public MergingTables(InputReader reader, OutputWriter writer) {
         this.reader = reader;
         this.writer = writer;
@@ -19,48 +21,80 @@ public class MergingTables {
         writer.writer.flush();
     }
 
+    
+    
+    
     class Table {
-        Table parent;
+        int parent;
         int rank;
         int numberOfRows;
 
-        Table(int numberOfRows) {
+
+        Table(int numberOfRows, int index) {
             this.numberOfRows = numberOfRows;
             rank = 0;
-            parent = this;
+            parent = index;
         }
-        Table getParent() {
-            // find super parent and compress path
-            return parent;
-        }
+
     }
 
     int maximumNumberOfRows = -1;
 
-    void merge(Table destination, Table source) {
-        Table realDestination = destination.getParent();
-        Table realSource = source.getParent();
-        if (realDestination == realSource) {
-            return;
-        }
-        // merge two components here
-        // use rank heuristic
-        // update maximumNumberOfRows
+    void make(int i, int rows) {
+    	Table t = new Table(rows, i);
+    	tables[i] = t;
+    }
+    
+    int find(int i) {
+    	while(tables[i].parent != i) {
+    		tables[i].parent = find(tables[i].parent);		//path compression
+    	}
+    	return tables[i].parent;
+    }
+    
+    void merge(int i, int j) {
+        
+    	
+    	int pi = find(i);
+    	int pj = find(j);
+    	
+    	if(pi == pj)
+    		return;
+    	
+    	int ranki = tables[pi].rank;
+    	int rankj = tables[pj].rank;
+    	
+    	if(ranki > rankj) {											// use rank heuristic
+    		tables[pj].parent = pi;
+    		tables[pi].numberOfRows += tables[pj].numberOfRows;
+    		tables[pj].numberOfRows = 0;
+    		maximumNumberOfRows = Math.max(maximumNumberOfRows, tables[pi].numberOfRows);
+    	} else {
+    		tables[pi].parent = pj;
+    		tables[pj].numberOfRows += tables[pi].numberOfRows;
+    		tables[pi].numberOfRows = 0;
+    		maximumNumberOfRows = Math.max(maximumNumberOfRows, tables[pj].numberOfRows);
+    	}
+    	
+    	if(ranki == rankj) {
+    		++tables[pj].rank;
+    	}
+    	
     }
 
     public void run() {
         int n = reader.nextInt();
         int m = reader.nextInt();
-        Table[] tables = new Table[n];
+        tables = new Table[n];
         for (int i = 0; i < n; i++) {
             int numberOfRows = reader.nextInt();
-            tables[i] = new Table(numberOfRows);
+            make(numberOfRows, i);
             maximumNumberOfRows = Math.max(maximumNumberOfRows, numberOfRows);
         }
         for (int i = 0; i < m; i++) {
             int destination = reader.nextInt() - 1;
             int source = reader.nextInt() - 1;
-            merge(tables[destination], tables[source]);
+            merge(destination, source);
             writer.printf("%d\n", maximumNumberOfRows);
         }
     }
