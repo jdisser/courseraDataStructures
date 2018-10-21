@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +12,11 @@ public class PhoneBook {
 
     private FastScanner in = new FastScanner();
     // Keep list of all existing (i.e. not deleted yet) contacts.
-    private List<Contact> contacts = new ArrayList<>();
+//    private List<Contact> contacts = new ArrayList<>();
+    
+    //rewrite using direct addressing...
+    
+    private String[] contacts = new String[10000000];
 
     public static void main(String[] args) {
         new PhoneBook().processQueries();
@@ -37,39 +42,43 @@ public class PhoneBook {
         if (query.type.equals("add")) {
             // if we already have contact with such number,
             // we should rewrite contact's name
-            boolean wasFound = false;
-            for (Contact contact : contacts)
-                if (contact.number == query.number) {
-                    contact.name = query.name;
-                    wasFound = true;
-                    break;
-                }
+            
+            contacts[query.number] = query.name;
+            
+            
             // otherwise, just add it
-            if (!wasFound)
-                contacts.add(new Contact(query.name, query.number));
+            
+            
         } else if (query.type.equals("del")) {
+        	/*
             for (Iterator<Contact> it = contacts.iterator(); it.hasNext(); )
                 if (it.next().number == query.number) {
                     it.remove();
                     break;
                 }
+                */
+        	contacts[query.number] = "not found";
         } else {
+        	/*
             String response = "not found";
             for (Contact contact: contacts)
                 if (contact.number == query.number) {
                     response = contact.name;
                     break;
                 }
-            writeResponse(response);
+            */
+            writeResponse(contacts[query.number]);
         }
     }
 
     public void processQueries() {
+    	for(int i = 0; i < contacts.length; ++i)
+    		contacts[i] = "not found";
         int queryCount = in.nextInt();
         for (int i = 0; i < queryCount; ++i)
             processQuery(readQuery());
     }
-
+    /*
     static class Contact {
         String name;
         int number;
@@ -79,6 +88,7 @@ public class PhoneBook {
             this.number = number;
         }
     }
+    */
 
     static class Query {
         String type;
