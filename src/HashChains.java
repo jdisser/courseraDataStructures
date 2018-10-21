@@ -1,7 +1,9 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.StringTokenizer;
 
 public class HashChains {
@@ -11,9 +13,12 @@ public class HashChains {
     // store all strings in one list
     private List<String> elems;
     // for hash function
+    
+    private List<LinkedList<String>> buckets;
+    
     private int bucketCount;
-    private int prime = 1000000007;
-    private int multiplier = 263;
+    private long prime = 1000000007;
+    private long multiplier = 263;
 
     public static void main(String[] args) throws IOException {
         new HashChains().processQueries();
@@ -22,7 +27,8 @@ public class HashChains {
     private int hashFunc(String s) {
         long hash = 0;
         for (int i = s.length() - 1; i >= 0; --i)
-            hash = (hash * multiplier + s.charAt(i)) % prime;
+            hash = ((hash * multiplier + s.charAt(i)) % prime + prime) % prime;		//handle negative(?) numbers
+        System.out.println(s + " Hash: " + hash);
         return (int)hash % bucketCount;
     }
 
@@ -40,29 +46,64 @@ public class HashChains {
     private void writeSearchResult(boolean wasFound) {
         out.println(wasFound ? "yes" : "no");
         // Uncomment the following if you want to play with the program interactively.
-        // out.flush();
+         out.flush();
     }
 
     private void processQuery(Query query) {
+    	
+    	String s = query.s;
+    	int hs = hashFunc(s);
+    	LinkedList<String> l = buckets.get(hs);
+    	
+   	
         switch (query.type) {
             case "add":
+            	if(l != null) {
+            		if(!l.contains(query.s))
+            			l.addFirst(s);
+            	} else {
+            		l = new LinkedList<String>();
+            		l.addFirst(s);
+            	}
+            	/*
                 if (!elems.contains(query.s))
                     elems.add(0, query.s);
+                */
                 break;
             case "del":
+            	if(l != null)
+            		l.remove(s);
+            	
+            	/*
                 if (elems.contains(query.s))
                     elems.remove(query.s);
+                */
                 break;
             case "find":
-                writeSearchResult(elems.contains(query.s));
+            	if(l != null)
+            		writeSearchResult(l.contains(s));
+            	else
+            		writeSearchResult(false);
                 break;
             case "check":
+            	
+            	if(l == null)
+            		out.println();
+            	else {
+            		for (ListIterator<String> it =  l.listIterator(); it.hasNext();) {
+            			out.print(it.next() + " ");
+            		}
+            		out.println();
+            	}
+            	/*
                 for (String cur : elems)
                     if (hashFunc(cur) == query.ind)
                         out.print(cur + " ");
                 out.println();
+                */
+            	
                 // Uncomment the following if you want to play with the program interactively.
-                // out.flush();
+                 out.flush();
                 break;
             default:
                 throw new RuntimeException("Unknown query: " + query.type);
@@ -70,7 +111,8 @@ public class HashChains {
     }
 
     public void processQueries() throws IOException {
-        elems = new ArrayList<>();
+    	buckets = new ArrayList<>();
+//        elems = new LinkedList<>();
         in = new FastScanner();
         out = new PrintWriter(new BufferedOutputStream(System.out));
         bucketCount = in.nextInt();
