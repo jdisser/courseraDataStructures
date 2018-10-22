@@ -43,7 +43,7 @@ public class HashChains {
     private void writeSearchResult(boolean wasFound) {
         out.println(wasFound ? "yes" : "no");
         // Uncomment the following if you want to play with the program interactively.
-         out.flush();
+//         out.flush();
     }
 
     private void processQuery(Query query) {
@@ -57,7 +57,7 @@ public class HashChains {
     	if(!query.type.equals("check")) {
     		s = query.s;
         	hs = hashFunc(s);
-        	System.out.println(s + " Hash: " + hs);
+//        	System.out.println(s + " Hash: " + hs);
         	l = buckets.get(hs);
     	} else {
     		l = buckets.get(query.ind);
@@ -116,7 +116,7 @@ public class HashChains {
                 */
             	
                 // Uncomment the following if you want to play with the program interactively.
-                 out.flush();
+//                 out.flush();
                 break;
             default:
                 throw new RuntimeException("Unknown query: " + query.type);
