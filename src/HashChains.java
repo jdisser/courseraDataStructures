@@ -50,12 +50,13 @@ public class HashChains {
     	
     	LinkedList<String> l;
     	String s = null;
+    	int hs = -1;
     	
-    	System.out.println("Type: " + query.type);
+//    	System.out.println("Type: " + query.type);
     	
     	if(!query.type.equals("check")) {
     		s = query.s;
-        	int hs = hashFunc(s);
+        	hs = hashFunc(s);
         	System.out.println(s + " Hash: " + hs);
         	l = buckets.get(hs);
     	} else {
@@ -65,6 +66,8 @@ public class HashChains {
     	
    	
         switch (query.type) {
+        
+        	
             case "add":
             	if(l != null) {
             		if(!l.contains(query.s))
@@ -72,6 +75,7 @@ public class HashChains {
             	} else {
             		l = new LinkedList<String>();
             		l.addFirst(s);
+            		buckets.put(hs, l);
             	}
             	/*
                 if (!elems.contains(query.s))
@@ -95,6 +99,7 @@ public class HashChains {
                 break;
             case "check":
             	
+//            	System.out.println("L: " + l);
             	if(l == null)
             		out.println();
             	else {
