@@ -1,7 +1,9 @@
 import java.io.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 public class HashSubstring {
@@ -36,16 +38,43 @@ public class HashSubstring {
         for (int i = 0; i + m <= n; ++i) {
 	    boolean equal = true;
 	    for (int j = 0; j < m; ++j) {
-		if (s.charAt(j) != t.charAt(i + j)) {
-		     equal = false;
- 		    break;
+			if (s.charAt(j) != t.charAt(i + j)) {
+			     equal = false;
+	 		    break;
+			}
+		    }
+	            if (equal)
+	                occurrences.add(i);
 		}
-	    }
-            if (equal)
-                occurrences.add(i);
-	}
         return occurrences;
     }
+    
+    private static long getPrime(long tp) {
+    	
+    	//tp is the text length * pattern length
+    	
+    	int l2 = 0;				//~log2
+    	long temp = tp;
+    	while(temp >= 2) {
+    		++l2;
+    		temp /= 2;
+    	}
+    	
+    	if(l2 < 16)				//32 bit max prime
+    		l2 *= 2;
+    	else
+    		l2 = 32;
+    	
+    	l2 = Math.max(l2, 31);	//min prime 31
+    	
+    	Random rnd = new Random(tp);
+    	
+    	long result = new BigInteger(l2, 16, rnd).longValueExact();
+    	
+    	return result;
+ 	
+    }
+    
 
     static class Data {
         String pattern;
