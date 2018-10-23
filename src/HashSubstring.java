@@ -39,6 +39,16 @@ public class HashSubstring {
         String s = input.pattern, t = input.text;
         int m = s.length(), n = t.length();
         List<Integer> occurrences = new ArrayList<Integer>();
+        
+        if(n == m) {
+        	if(areEqual(s,t)) {
+        		occurrences.add(0);
+        		return occurrences;
+        	}
+        }
+        
+        
+        
         long[] H = new long[n - m + 1];
         
         long prime = getPrime(n*m);
@@ -134,6 +144,8 @@ public class HashSubstring {
     		l2 *= 2;
     	else
     		l2 = 32;
+    	
+    	l2 = Math.max(l2, 3);	//3 bit minimum bitlength for prime
 
     	Random rnd = new Random(tp);   	
     	long result = new BigInteger(l2, 16, rnd).longValueExact();		//generate prime number of l2 bits   	
