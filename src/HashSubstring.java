@@ -50,7 +50,7 @@ public class HashSubstring {
         
 //        System.out.println("phash: " + phash);
         
-        for(int i = 0; i < n - m; ++i) {
+        for(int i = 0; i < n - m + 1; ++i) {
         	if(H[i] == phash) {
         		if(areEqual(t.substring(i, i + m),s)) {
         			occurrences.add(i);
