@@ -1,6 +1,7 @@
 import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 //import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -47,18 +48,25 @@ public class HashSubstring {
         
         H = precomputeHashes(t,m,prime,x);
         
+//        System.out.println("phash: " + phash);
+        
         for(int i = 0; i < n - m; ++i) {
         	if(H[i] == phash) {
-        		if(areEqual(t.substring(i, i + m - 1),s)) {
+        		if(areEqual(t.substring(i, i + m),s)) {
         			occurrences.add(i);
         		}
         	}
         }
         
+//        System.out.println("Output: " + Arrays.toString(occurrences.toArray()));
+        
         return occurrences;
     }
     
     private static boolean areEqual(String s1, String s2) {
+    	
+//    	System.out.println("s1: " + s1 + " s2: " + s2);
+    	
     	if (s1.length() != s2.length())
     		return false;
     	
@@ -100,9 +108,13 @@ public class HashSubstring {
     		y = (y * x) % p;
     	}
     	
+//    	System.out.println("x: " + x + " y: " + y);
+    	
     	for (int i = n - m - 1; i >= 0; --i) {
-    		H[i] = (p + x * H[i + 1] + t.charAt(i) - t.charAt(i + m) * y ) % p;	//p is added to avoid a negative arg of %
+    		H[i] = (((x * H[i + 1] + t.charAt(i) - t.charAt(i + m) * y ) % p) + p) % p;	//p is added to avoid a negative arg of %
     	}
+    	
+//    	System.out.println("H: " + Arrays.toString(H));
     	
     	return H;
     	
@@ -126,6 +138,8 @@ public class HashSubstring {
     	Random rnd = new Random(tp);   	
     	long result = new BigInteger(l2, 16, rnd).longValueExact();		//generate prime number of l2 bits   	
     	result = Math.max(result, 31);	//min prime 31
+    	
+//    	System.out.println("Prime: " + result);
     	
     	return result;
  	
