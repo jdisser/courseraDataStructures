@@ -41,14 +41,18 @@ public class is_bst_hard {
         Node[] tree;
         ArrayList<Integer> leaves;
         ArrayList<Integer> keys;
+        int maxKey = Integer.MIN_VALUE;
+        int minKey = Integer.MAX_VALUE;
 
         
-        private void inOrder(int r) {
+        private void inOrder(int r, ArrayList<Integer> l) {
         	if(r == -1)
         		return;
-        	inOrder(tree[r].left);
-        	keys.add(tree[r].key);
-        	inOrder(tree[r].right);
+        	inOrder(tree[r].left, l);
+        	l.add(tree[r].key);
+        	maxKey = Math.max(maxKey, tree[r].key);
+        	minKey = Math.min(minKey, tree[r].key);
+        	inOrder(tree[r].right, l);
         }
         
         
@@ -110,6 +114,8 @@ public class is_bst_hard {
 
         boolean isBinarySearchTree() {
         	boolean result = true;
+        	int maxLeft = 0;
+        	int minRight = 0;
         	
           if(leaves.isEmpty())
         	  return result;				//case of empty tree or single node
@@ -121,6 +127,31 @@ public class is_bst_hard {
         	  }
           }
           
+          if(result = true) {
+        	  maxKey = Integer.MIN_VALUE;
+        	  minKey = Integer.MAX_VALUE;
+        	  int rootKey = tree[0].key;
+        	  
+        	  keys.clear();
+        	  
+        	  if(tree[0].left != -1) {
+        		  inOrder(tree[0].left, keys);
+            	  maxLeft = maxKey;
+        	  }
+        	  
+        	  keys.clear();
+        	  
+        	  maxKey = Integer.MIN_VALUE;
+        	  minKey = Integer.MAX_VALUE;
+        	  if(tree[0].right != -1) {
+        		  inOrder(tree[0].right, keys);
+            	  minRight = minKey;
+        	  }
+        	  
+        	  if(maxLeft >= rootKey || minRight < rootKey)
+        		  result = false;
+        	  
+          }
 //          inOrder(0);
 //          System.out.println(keys.toString());
          
