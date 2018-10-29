@@ -24,6 +24,81 @@ public class tree_orders {
 	public class TreeOrders {
 		int n;
 		int[] key, left, right;
+		ArrayList<Node> nodes;
+		ArrayList<Integer> result;
+		Node root;
+		
+		public TreeOrders() {
+			this.nodes = new ArrayList<Node>();
+			this.result = new ArrayList<Integer>();
+		}
+		
+		class Node {
+			public Node parent,left,right;
+			public int key;
+			
+			public Node(int key) {
+				this.key = key;
+				this.parent = null;
+				this.left = null;
+				this.right = null;
+			}
+		}
+		
+		public void constructTree() {
+			
+			for(int i = 0; i < n; i++) {
+				nodes.add(new Node(key[i]));
+			}
+			
+			for(int i = 0; i < n; ++i) {
+				int l = left[i];
+				int r = right[i];
+				Node nt = nodes.get(i);
+				Node nl = nodes.get(l);
+				Node nr = nodes.get(r);
+				
+				nt.left = nl;
+				nt.right = nr;
+				nr.parent = nt;
+				nl.parent = nt;
+			}
+			
+			for(int i = 0; i < n; ++i) {
+				if(nodes.get(i).parent == null) {
+					root = nodes.get(i);
+					break;
+				}
+					
+			}
+			
+		}
+		
+		private void preOrder(Node n) {
+			if(n == null)
+				return;
+			result.add(n.key);
+			preOrder(n.left);
+			preOrder(n.right);
+		}
+		
+		private void inOrder(Node n) {
+			if(n == null)
+				return;
+			inOrder(n.left);
+			result.add(n.key);
+			inOrder(n.right);
+		}
+		
+		private void postOrder(Node n) {
+			if(n == null)
+				return;
+			postOrder(n.left);
+			postOrder(n.right);
+			result.add(n.key);
+		}
+		
+		
 		
 		void read() throws IOException {
 			FastScanner in = new FastScanner();
@@ -37,28 +112,23 @@ public class tree_orders {
 				right[i] = in.nextInt();
 			}
 		}
+		
 
-		List<Integer> inOrder() {
-			ArrayList<Integer> result = new ArrayList<Integer>();
-                        // Finish the implementation
-                        // You may need to add a new recursive method to do that
-                        
+		List<Integer> inOrderList() {
+			result.clear();
+			inOrder(root);
 			return result;
 		}
 
-		List<Integer> preOrder() {
-			ArrayList<Integer> result = new ArrayList<Integer>();
-                        // Finish the implementation
-                        // You may need to add a new recursive method to do that
-                        
+		List<Integer> preOrderList() {
+			result.clear();
+			preOrder(root);
 			return result;
 		}
 
-		List<Integer> postOrder() {
-			ArrayList<Integer> result = new ArrayList<Integer>();
-                        // Finish the implementation
-                        // You may need to add a new recursive method to do that
-                        
+		List<Integer> postOrderList() {
+			result.clear();
+			postOrder(root);
 			return result;
 		}
 	}
@@ -84,8 +154,9 @@ public class tree_orders {
 	public void run() throws IOException {
 		TreeOrders tree = new TreeOrders();
 		tree.read();
-		print(tree.inOrder());
-		print(tree.preOrder());
-		print(tree.postOrder());
+		tree.constructTree();
+		print(tree.inOrderList());
+		print(tree.preOrderList());
+		print(tree.postOrderList());
 	}
 }
