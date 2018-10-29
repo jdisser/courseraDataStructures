@@ -34,12 +34,12 @@ public class tree_orders {
 		}
 		
 		class Node {
-			public Node parent,left,right;
-			public int key;
+			public Node left,right;
+			public int key, parent;
 			
 			public Node(int key) {
 				this.key = key;
-				this.parent = null;
+				this.parent = -1;
 				this.left = null;
 				this.right = null;
 			}
@@ -55,17 +55,21 @@ public class tree_orders {
 				int l = left[i];
 				int r = right[i];
 				Node nt = nodes.get(i);
-				Node nl = nodes.get(l);
-				Node nr = nodes.get(r);
+				Node nl = l != -1? nodes.get(l): null;
+				Node nr = r != -1? nodes.get(r): null;
+				
+//				System.out.println("i: " + i + " l: " + l + " r: " + r);
 				
 				nt.left = nl;
 				nt.right = nr;
-				nr.parent = nt;
-				nl.parent = nt;
+				if(nr != null)
+					nr.parent = i;
+				if(nl != null)
+					nl.parent = i;
 			}
 			
 			for(int i = 0; i < n; ++i) {
-				if(nodes.get(i).parent == null) {
+				if(nodes.get(i).parent == -1) {
 					root = nodes.get(i);
 					break;
 				}
