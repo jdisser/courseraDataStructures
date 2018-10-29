@@ -35,19 +35,65 @@ public class is_bst {
 
         int nodes;
         Node[] tree;
+        ArrayList<Integer> leaves;
 
+        
+        private int find(int ri, int key) {
+        	int result = -1;
+        	
+        	if(tree[ri].key == key)
+        		return ri;
+        	
+        	if(tree[ri].left == -1 && tree[ri].right == -1)		//if a leave is reached and the key not found the tree is bad
+        		return result;
+        	
+        	if(key > tree[ri].key) {
+        		if(tree[tree[ri].right].key < tree[ri].key)
+        			return result;
+        		else
+        			result = find(tree[ri].right, key);
+        	}
+        	
+        	if(key < tree[ri].key) {
+        		if(tree[tree[ri].left].key > tree[ri].key)
+        			return result;
+        		else
+        			result = find(tree[ri].left, key);
+        	}
+        	
+        	return result;
+        }
+        
+        
+        
+        
+        //TODO: assume tree[0] is root???
         void read() throws IOException {
             FastScanner in = new FastScanner();
             nodes = in.nextInt();
             tree = new Node[nodes];
+            leaves = new ArrayList<Integer>();
             for (int i = 0; i < nodes; i++) {
                 tree[i] = new Node(in.nextInt(), in.nextInt(), in.nextInt());
+                if(tree[i].left == -1 && tree[i].right == -1)
+                	leaves.add(i);
             }
         }
 
         boolean isBinarySearchTree() {
-          // Implement correct algorithm here
-          return true;
+        	boolean result = true;
+        	
+          if(leaves.isEmpty())
+        	  return result;				//case of empty tree or single node
+          
+          for(int l : leaves) {
+        	  if(find(0,tree[l].key) == -1) {
+        		  result = false;
+        		  break;
+        	  }
+          }
+         
+          return result;
         }
     }
 
@@ -64,7 +110,7 @@ public class is_bst {
     public void run() throws IOException {
         IsBST tree = new IsBST();
         tree.read();
-        if (tree.solve()) {
+        if (tree.isBinarySearchTree()) {
             System.out.println("CORRECT");
         } else {
             System.out.println("INCORRECT");
