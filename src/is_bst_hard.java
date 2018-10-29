@@ -40,7 +40,19 @@ public class is_bst_hard {
         int nodes;
         Node[] tree;
         ArrayList<Integer> leaves;
+        ArrayList<Integer> keys;
 
+        
+        private void inOrder(int r) {
+        	if(r == -1)
+        		return;
+        	inOrder(tree[r].left);
+        	keys.add(tree[r].key);
+        	inOrder(tree[r].right);
+        }
+        
+        
+        
         
         private int findLeave(int ri, int key) {
         	int result = -1;
@@ -55,8 +67,9 @@ public class is_bst_hard {
         		return result;
         	
         	if(key >= tree[ri].key) {
-        		if(tree[ri].right != -1) {							//if the subtree is null key not found
-        			if(tree[tree[ri].right].key < tree[ri].key)		//or if the subtree root is invalid key not found
+        		if(tree[ri].right != -1) {	//if the subtree is null key not found
+        			if(tree[tree[ri].right].key < tree[ri].key ||  (tree[ri].left != -1? tree[tree[ri].left].key >= tree[ri].key: false))		
+        															//or if the child keys are invalid
             			return result;
             		else
             			result = findLeave(tree[ri].right, key);			//if subtree valid search for the key
@@ -67,7 +80,7 @@ public class is_bst_hard {
         	
         	if(key < tree[ri].key) {
         		if(tree[ri].left != -1) {
-        			if(tree[tree[ri].left].key >= tree[ri].key)
+        			if(tree[tree[ri].left].key >= tree[ri].key ||  (tree[ri].right != -1? tree[tree[ri].right].key < tree[ri].key: false))
             			return result;
             		else
             			result = findLeave(tree[ri].left, key);
@@ -87,6 +100,7 @@ public class is_bst_hard {
             nodes = in.nextInt();
             tree = new Node[nodes];
             leaves = new ArrayList<Integer>();
+            keys = new ArrayList<Integer>();
             for (int i = 0; i < nodes; i++) {
                 tree[i] = new Node(in.nextInt(), in.nextInt(), in.nextInt());
                 if(tree[i].left == -1 && tree[i].right == -1)
@@ -106,6 +120,9 @@ public class is_bst_hard {
         		  break;
         	  }
           }
+          
+//          inOrder(0);
+//          System.out.println(keys.toString());
          
           return result;
         }
