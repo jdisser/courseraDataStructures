@@ -41,24 +41,34 @@ public class is_bst {
         private int find(int ri, int key) {
         	int result = -1;
         	
-        	if(tree[ri].key == key)
+        	if(ri == -1)										//null does not hold key
+        		return result;
+        	
+        	if(tree[ri].key == key)								//found the key
         		return ri;
         	
         	if(tree[ri].left == -1 && tree[ri].right == -1)		//if a leave is reached and the key not found the tree is bad
         		return result;
         	
         	if(key > tree[ri].key) {
-        		if(tree[tree[ri].right].key < tree[ri].key)
+        		if(tree[ri].right != -1) {							//if the subtree is null key not found
+        			if(tree[tree[ri].right].key < tree[ri].key)		//or if the subtree root is invalid key not found
+            			return result;
+            		else
+            			result = find(tree[ri].right, key);			//if subtree valid search for the key
+        		} else
         			return result;
-        		else
-        			result = find(tree[ri].right, key);
+        		
         	}
         	
         	if(key < tree[ri].key) {
-        		if(tree[tree[ri].left].key > tree[ri].key)
-        			return result;
-        		else
-        			result = find(tree[ri].left, key);
+        		if(tree[ri].left != -1) {
+        			if(tree[tree[ri].left].key > tree[ri].key)
+            			return result;
+            		else
+            			result = find(tree[ri].left, key);
+        		}
+        		
         	}
         	
         	return result;
