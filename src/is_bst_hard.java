@@ -42,24 +42,24 @@ public class is_bst_hard {
         ArrayList<Integer> leaves;
 
         
-        private int find(int ri, int key) {
+        private int findLeave(int ri, int key) {
         	int result = -1;
         	
         	if(ri == -1)										//null does not hold key
         		return result;
         	
-        	if(tree[ri].key == key)								//found the key
+        	if(tree[ri].key == key && tree[ri].left == -1 && tree[ri].right == -1)	//found the leave
         		return ri;
         	
         	if(tree[ri].left == -1 && tree[ri].right == -1)		//if a leave is reached and the key not found the tree is bad
         		return result;
         	
-        	if(key > tree[ri].key) {
+        	if(key >= tree[ri].key) {
         		if(tree[ri].right != -1) {							//if the subtree is null key not found
         			if(tree[tree[ri].right].key < tree[ri].key)		//or if the subtree root is invalid key not found
             			return result;
             		else
-            			result = find(tree[ri].right, key);			//if subtree valid search for the key
+            			result = findLeave(tree[ri].right, key);			//if subtree valid search for the key
         		} else
         			return result;
         		
@@ -67,10 +67,10 @@ public class is_bst_hard {
         	
         	if(key < tree[ri].key) {
         		if(tree[ri].left != -1) {
-        			if(tree[tree[ri].left].key > tree[ri].key)
+        			if(tree[tree[ri].left].key >= tree[ri].key)
             			return result;
             		else
-            			result = find(tree[ri].left, key);
+            			result = findLeave(tree[ri].left, key);
         		}
         		
         	}
@@ -101,7 +101,7 @@ public class is_bst_hard {
         	  return result;				//case of empty tree or single node
           
           for(int l : leaves) {
-        	  if(find(0,tree[l].key) == -1) {
+        	  if(findLeave(0,tree[l].key) == -1) {
         		  result = false;
         		  break;
         	  }
