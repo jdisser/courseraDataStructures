@@ -43,63 +43,19 @@ public class is_bst_hard {
         Node[] tree;
         ArrayList<Integer> leaves;
         ArrayList<Long> keys;
-        long maxKey = Integer.MIN_VALUE;
-        long minKey = Integer.MAX_VALUE;
-
-        
-        private void inOrder(int r, ArrayList<Long> l) {
-        	if(r == -1)
-        		return;
-        	inOrder(tree[r].left, l);
-        	l.add(tree[r].key);
-        	maxKey = Math.max(maxKey, tree[r].key);
-        	minKey = Math.min(minKey, tree[r].key);
-        	inOrder(tree[r].right, l);
+        long maxKey = Integer.MAX_VALUE;
+        long minKey = Integer.MIN_VALUE;
+       
+        private boolean isBST(int ri, long min, long max) {
+        	if(ri == -1)
+        		return true;
+        	
+        	if(tree[ri].key < min || tree[ri].key > max)
+        		return false;
+        	
+        	return (isBST(tree[ri].left, min, tree[ri].key - 1) && isBST(tree[ri].right, tree[ri].key, max));
         }
-        
-        
-        
-        
-        private int findLeave(int ri, long key) {
-        	int result = -1;
-        	
-        	if(ri == -1)										//null does not hold key
-        		return result;
-        	
-        	if(tree[ri].key == key && tree[ri].left == -1 && tree[ri].right == -1)	//found the leave
-        		return ri;
-        	
-        	if(tree[ri].left == -1 && tree[ri].right == -1)		//if a leave is reached and the key not found the tree is bad
-        		return result;
-        	
-        	if(key >= tree[ri].key) {
-        		if(tree[ri].right != -1) {	//if the subtree is null key not found
-        			if(tree[tree[ri].right].key < tree[ri].key ||  (tree[ri].left != -1? tree[tree[ri].left].key >= tree[ri].key: false))		
-        															//or if the child keys are invalid
-            			return result;
-            		else
-            			result = findLeave(tree[ri].right, key);			//if subtree valid search for the key
-        		} else
-        			return result;
-        		
-        	}
-        	
-        	if(key < tree[ri].key) {
-        		if(tree[ri].left != -1) {
-        			if(tree[tree[ri].left].key >= tree[ri].key ||  (tree[ri].right != -1? tree[tree[ri].right].key < tree[ri].key: false))
-            			return result;
-            		else
-            			result = findLeave(tree[ri].left, key);
-        		}
-        		
-        	}
-        	
-        	return result;
-        }
-        
-        
-        
-        
+      
        
         void read() throws IOException {
             FastScanner in = new FastScanner();
@@ -107,12 +63,12 @@ public class is_bst_hard {
             tree = new Node[nodes];
             leaves = new ArrayList<Integer>();
             keys = new ArrayList<Long>();
-            for (int i = 0; i < nodes; i++) {
+            for (int i = 0; i < nodes; i++) {									//build tree
                 tree[i] = new Node(in.nextInt(), in.nextInt(), in.nextInt());
                 if(tree[i].left == -1 && tree[i].right == -1 && i != 0)
                 	leaves.add(i);
             }
-            for(int i = 0; i < nodes; i++) {
+            for(int i = 0; i < nodes; i++) {									//find root
             	if(tree[i].left != -1)
             		tree[tree[i].left].parent = i;
             	if(tree[i].right != -1)
@@ -126,50 +82,12 @@ public class is_bst_hard {
         }
 
         boolean isBinarySearchTree() {
-        	boolean result = true;
-        	int maxLeft = 0;
-        	int minRight = 0;
         	
           if(leaves.isEmpty())
-        	  return result;				//case of empty tree or single node
+        	  return true;				//case of empty tree or single node
           
-          for(int l : leaves) {
-        	  if(findLeave(root,tree[l].key) == -1) {
-        		  result = false;
-        		  break;
-        	  }
-          }
-          /*
-          if(result = true) {
-        	  maxKey = Integer.MIN_VALUE;
-        	  minKey = Integer.MAX_VALUE;
-        	  int rootKey = tree[root].key;
-        	  
-        	  keys.clear();
-        	  
-        	  if(tree[root].left != -1) {
-        		  inOrder(tree[0].left, keys);
-            	  maxLeft = maxKey;
-        	  }
-        	  
-        	  keys.clear();
-        	  
-        	  maxKey = Integer.MIN_VALUE;
-        	  minKey = Integer.MAX_VALUE;
-        	  if(tree[root].right != -1) {
-        		  inOrder(tree[0].right, keys);
-            	  minRight = minKey;
-        	  }
-        	  
-        	  if(maxLeft >= rootKey || minRight < rootKey)
-        		  result = false;
-        	  
-          }
-          */
-//          inOrder(root);
-//          System.out.println(keys.toString());
-         
-          return result;
+          return isBST(root, minKey, maxKey);
+          
         }
     }
 
