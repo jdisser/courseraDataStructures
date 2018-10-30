@@ -107,7 +107,7 @@ public class is_bst_hard {
             keys = new ArrayList<Integer>();
             for (int i = 0; i < nodes; i++) {
                 tree[i] = new Node(in.nextInt(), in.nextInt(), in.nextInt());
-                if(tree[i].left == -1 && tree[i].right == -1)
+                if(tree[i].left == -1 && tree[i].right == -1 && i != 0)
                 	leaves.add(i);
             }
         }
