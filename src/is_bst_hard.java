@@ -1,7 +1,6 @@
 import java.util.*;
 
-//import is_bst.FastScanner;
-//import is_bst.IsBST.Node;
+
 
 import java.io.*;
 
@@ -29,15 +28,18 @@ public class is_bst_hard {
             int key;
             int left;
             int right;
+            int parent;
 
             Node(int key, int left, int right) {
                 this.left = left;
                 this.right = right;
                 this.key = key;
+                this.parent = -1;
             }
         }
 
         int nodes;
+        int root;
         Node[] tree;
         ArrayList<Integer> leaves;
         ArrayList<Integer> keys;
@@ -98,7 +100,7 @@ public class is_bst_hard {
         
         
         
-        //TODO: assume tree[0] is root???
+       
         void read() throws IOException {
             FastScanner in = new FastScanner();
             nodes = in.nextInt();
@@ -109,6 +111,17 @@ public class is_bst_hard {
                 tree[i] = new Node(in.nextInt(), in.nextInt(), in.nextInt());
                 if(tree[i].left == -1 && tree[i].right == -1 && i != 0)
                 	leaves.add(i);
+            }
+            for(int i = 0; i < nodes; i++) {
+            	if(tree[i].left != -1)
+            		tree[tree[i].left].parent = i;
+            	if(tree[i].right != -1)
+            		tree[tree[i].right].parent = i;
+            }
+            for(int i = 0; i < nodes; i++) {
+            	if(tree[i].parent == -1) {
+            		root = i;
+            	}
             }
         }
 
@@ -121,20 +134,20 @@ public class is_bst_hard {
         	  return result;				//case of empty tree or single node
           
           for(int l : leaves) {
-        	  if(findLeave(0,tree[l].key) == -1) {
+        	  if(findLeave(root,tree[l].key) == -1) {
         		  result = false;
         		  break;
         	  }
           }
-          
+          /*
           if(result = true) {
         	  maxKey = Integer.MIN_VALUE;
         	  minKey = Integer.MAX_VALUE;
-        	  int rootKey = tree[0].key;
+        	  int rootKey = tree[root].key;
         	  
         	  keys.clear();
         	  
-        	  if(tree[0].left != -1) {
+        	  if(tree[root].left != -1) {
         		  inOrder(tree[0].left, keys);
             	  maxLeft = maxKey;
         	  }
@@ -143,7 +156,7 @@ public class is_bst_hard {
         	  
         	  maxKey = Integer.MIN_VALUE;
         	  minKey = Integer.MAX_VALUE;
-        	  if(tree[0].right != -1) {
+        	  if(tree[root].right != -1) {
         		  inOrder(tree[0].right, keys);
             	  minRight = minKey;
         	  }
@@ -152,7 +165,8 @@ public class is_bst_hard {
         		  result = false;
         	  
           }
-//          inOrder(0);
+          */
+//          inOrder(root);
 //          System.out.println(keys.toString());
          
           return result;
