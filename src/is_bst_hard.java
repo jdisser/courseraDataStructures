@@ -25,12 +25,12 @@ public class is_bst_hard {
 
     public class IsBST {
         class Node {
-            int key;
+            long key;
             int left;
             int right;
             int parent;
 
-            Node(int key, int left, int right) {
+            Node(long key, int left, int right) {
                 this.left = left;
                 this.right = right;
                 this.key = key;
@@ -42,12 +42,12 @@ public class is_bst_hard {
         int root;
         Node[] tree;
         ArrayList<Integer> leaves;
-        ArrayList<Integer> keys;
-        int maxKey = Integer.MIN_VALUE;
-        int minKey = Integer.MAX_VALUE;
+        ArrayList<Long> keys;
+        long maxKey = Integer.MIN_VALUE;
+        long minKey = Integer.MAX_VALUE;
 
         
-        private void inOrder(int r, ArrayList<Integer> l) {
+        private void inOrder(int r, ArrayList<Long> l) {
         	if(r == -1)
         		return;
         	inOrder(tree[r].left, l);
@@ -60,7 +60,7 @@ public class is_bst_hard {
         
         
         
-        private int findLeave(int ri, int key) {
+        private int findLeave(int ri, long key) {
         	int result = -1;
         	
         	if(ri == -1)										//null does not hold key
@@ -106,7 +106,7 @@ public class is_bst_hard {
             nodes = in.nextInt();
             tree = new Node[nodes];
             leaves = new ArrayList<Integer>();
-            keys = new ArrayList<Integer>();
+            keys = new ArrayList<Long>();
             for (int i = 0; i < nodes; i++) {
                 tree[i] = new Node(in.nextInt(), in.nextInt(), in.nextInt());
                 if(tree[i].left == -1 && tree[i].right == -1 && i != 0)
